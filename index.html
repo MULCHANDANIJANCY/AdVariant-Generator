@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing Creative Brief &amp; Ad Variant Generator</title>
+<style>
+:root{--c:#1f5a45;--tint:#edf5f1;--line:#d3e4dc;--ink:#14281f;--mute:#5b7468}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,sans-serif}
+header{padding:26px 32px 0;max-width:1000px;margin:0 auto}
+header h1{font:600 24px Georgia,serif;color:var(--c);margin:0 0 4px}
+header p{margin:0 0 18px;color:var(--mute)}
+.steps{display:flex;gap:0;border-bottom:2px solid var(--line);flex-wrap:wrap}
+.step{padding:10px 18px;font-weight:600;font-size:14px;color:var(--mute);border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;background:none;border-top:0;border-left:0;border-right:0}
+.step.on{color:var(--c);border-bottom-color:var(--c)}
+main{max-width:1000px;margin:0 auto;padding:24px 32px 48px}
+.pane{display:none}.pane.on{display:block}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--c);margin:12px 0 4px}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;color:var(--ink);background:#fff}
+textarea{min-height:90px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+button.b{background:#fff;color:var(--c);border:1.5px solid var(--c);border-radius:8px;padding:9px 18px;font:600 14px inherit;cursor:pointer;margin:16px 8px 0 0}
+button.b:hover:not(:disabled){background:var(--tint)}button:disabled{opacity:.5}
+.brief{background:var(--tint);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+.brief h2,.vh{font:600 17px Georgia,serif;color:var(--c);margin:0 0 8px}
+.brief dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0}
+.brief dt{font-weight:600;color:var(--c);font-size:13px}.brief dd{margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.v{border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column}
+.v.ok{border-color:var(--c);box-shadow:inset 4px 0 0 var(--c)}.v.no{opacity:.55}
+.angle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}
+.hook{font:600 17px/1.35 Georgia,serif;margin:6px 0}
+.cta{display:inline-block;border:1.5px solid var(--c);color:var(--c);border-radius:20px;padding:2px 14px;font-weight:600;font-size:13px;margin:8px 0;align-self:flex-start}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--c);font-weight:600;margin-top:10px}
+.warn{background:var(--tint);border-left:3px solid var(--c);padding:5px 9px;margin:4px 0;font-size:12.5px;border-radius:4px}
+.st{margin-top:auto;padding-top:12px;font-size:12px;color:var(--mute)}
+.v button{background:#fff;color:var(--c);border:1.5px solid var(--c);border-radius:8px;padding:5px 12px;font:600 13px inherit;cursor:pointer;margin:0 6px 0 0}
+.err{background:var(--tint);border-left:4px solid var(--c);padding:10px 14px;border-radius:6px;margin-top:12px}
+.note{font-size:13px;color:var(--mute)}
+@media(max-width:700px){.two{grid-template-columns:1fr}.brief dl{grid-template-columns:1fr}header,main{padding-left:18px;padding-right:18px}}
+@media print{.steps,.noprint{display:none}.pane{display:block!important}.v.no{display:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Ad Variant Generator</h1>
+<p>Turn a product brief into a campaign brief and ad variants. Nothing is approved until you approve it.</p>
+<div class="steps" id="steps">
+<button class="step on" data-p="p1">1 · Product</button><button class="step" data-p="p2">2 · Audience &amp; offer</button><button class="step" data-p="p3">3 · Brand rules</button><button class="step" data-p="p4">4 · Review &amp; approve</button>
+</div>
+</header>
+<main>
+<div class="pane on" id="p1">
+<label class="f">Product or service and what it does</label><textarea id="product" placeholder="e.g. A booking app for independent yoga studios"></textarea>
+<label class="f">Channel</label><select id="channel"><option>Social feed</option><option>Search ad</option><option>Email</option><option>Display banner</option></select>
+<button class="b" onclick="go('p2')">Next</button><button class="b" id="demo">Load demo</button>
+</div>
+<div class="pane" id="p2">
+<label class="f">Target audience</label><textarea id="audience" placeholder="Who they are and what problem they have"></textarea>
+<label class="f">Offer (leave blank if none)</label><input id="offer" placeholder="e.g. 14-day trial, no card needed">
+<button class="b" onclick="go('p1')">Back</button><button class="b" onclick="go('p3')">Next</button>
+</div>
+<div class="pane" id="p3">
+<div class="two"><div><label class="f">Brand tone</label><input id="tone" placeholder="warm, practical, plain language"></div>
+<div><label class="f">Number of variants</label><select id="count"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div></div>
+<label class="f">Banned words (comma separated)</label><input id="banned" placeholder="cheap, revolutionary, guaranteed">
+<button class="b" onclick="go('p2')">Back</button><button class="b" id="gen">Generate brief &amp; variants</button>
+<div id="msg"></div>
+</div>
+<div class="pane" id="p4"><p class="note">Generate variants first.</p></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let data=null;
+function go(p){document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("on",x.id===p));document.querySelectorAll(".step").forEach(s=>s.classList.toggle("on",s.dataset.p===p))}
+$("steps").onclick=e=>{if(e.target.dataset.p)go(e.target.dataset.p)};
+$("gen").onclick=async()=>{
+  $("gen").disabled=true;$("gen").textContent="Writing…";$("msg").innerHTML="";
+  try{
+    const r=await fetch("/api/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({product:$("product").value,audience:$("audience").value,offer:$("offer").value,channel:$("channel").value,tone:$("tone").value,banned:$("banned").value,count:$("count").value})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||"Request failed");
+    data=d;draw();go("p4");
+  }catch(e){$("msg").innerHTML=`<div class="err">${esc(e.message)}</div>`}
+  $("gen").disabled=false;$("gen").textContent="Generate brief & variants";
+};
+$("demo").onclick=()=>{data={demo:true,brief:{objective:"Get independent yoga studios to start a trial of the booking app.",audience_insight:"Studio owners lose time to manual bookings and missed classes, and have little time to learn new tools.",key_message:"Simple online booking that fits a small studio’s day.",tone:"Warm, practical, plain language",proof_needed:["Number of studios using the app","Customer testimonial with permission","Trial terms in writing"]},
+variants:[
+{angle:"Pain point",hook:"Still managing class bookings by text message?",body:"Give students one place to book, and give yourself your evenings back.",cta:"Start your trial",required_proof:["Customer quote on time saved"],warnings:[],checks:[],status:"Pending approval"},
+{angle:"Outcome",hook:"Fewer empty mats, fewer admin hours.",body:"Studios use online booking to keep classes full without chasing replies.",cta:"See how it works",required_proof:["Source for the “fewer empty mats” claim"],warnings:["Outcome stated without supporting data"],checks:[],status:"Pending approval"},
+{angle:"Offer-led",hook:"Try studio booking free for 14 days.",body:"No card needed. Set up your first class in minutes.",cta:"Try it free",required_proof:["Written trial terms","Setup-time evidence for “in minutes”"],warnings:["Check wording of the offer"],checks:["“Free” offer: must match the offer terms exactly (“Free”)"],status:"Pending approval"},
+{angle:"Social proof request",hook:"Join studios that moved booking online.",body:"See what owners say about the switch.",cta:"Read their stories",required_proof:["At least 3 approved testimonials","Count of studios"],warnings:["Do not publish until real testimonials are supplied"],checks:[],status:"Pending approval"}]};draw();go("p4")};
+function draw(){
+  const b=data.brief;
+  $("p4").innerHTML=`${data.demo?'<p class="note">DEMO DATA: illustrative sample, not generated from your input.</p>':""}
+  <div class="brief"><h2>Campaign brief</h2><dl><dt>Objective</dt><dd>${esc(b.objective)}</dd><dt>Audience insight</dt><dd>${esc(b.audience_insight)}</dd><dt>Key message</dt><dd>${esc(b.key_message)}</dd><dt>Tone</dt><dd>${esc(b.tone)}</dd><dt>Proof to collect</dt><dd>${(b.proof_needed||[]).map(esc).join("; ")}</dd></dl></div>
+  <div class="vh">Ad variants (${data.variants.length})</div>
+  <div class="grid">${data.variants.map((v,i)=>`<div class="v ${v.status==="Approved"?"ok":v.status==="Rejected"?"no":""}">
+  <div class="angle">${esc(v.angle)}</div><div class="hook">${esc(v.hook)}</div><div>${esc(v.body)}</div><span class="cta">${esc(v.cta)}</span>
+  <div class="lbl">Required proof</div><div class="note">${(v.required_proof||[]).map(esc).join("; ")||"None listed"}</div>
+  ${(v.checks||[]).length||(v.warnings||[]).length?`<div class="lbl">Policy and claim warnings</div>${[...(v.checks||[]).map(c=>[c,"Code check"]),...(v.warnings||[]).map(c=>[c,"AI flag"])].map(w=>`<div class="warn"><b>${w[1]}:</b> ${esc(w[0])}</div>`).join("")}`:'<div class="note" style="margin-top:8px">No warnings found. A human still decides.</div>'}
+  <div class="st">Status: <b>${v.status}</b></div>
+  <div style="margin-top:6px"><button onclick="setS(${i},'Approved')">Approve</button><button onclick="setS(${i},'Rejected')">Reject</button><button onclick="edit(${i})">Edit</button></div></div>`).join("")}</div>
+  <button class="b noprint" onclick="window.print()">Print approved set / PDF</button><button class="b noprint" onclick="dl()">Download approved JSON</button>`;
+}
+function setS(i,s){data.variants[i].status=s;draw()}
+function edit(i){const v=data.variants[i];const h=prompt("Edit hook",v.hook);if(h!==null)v.hook=h;const t=prompt("Edit body",v.body);if(t!==null)v.body=t;v.status="Pending approval";draw()}
+function dl(){const out={brief:data.brief,approved:data.variants.filter(v=>v.status==="Approved")};const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:"application/json"}));a.download="approved-ads.json";a.click()}
+</script>
+</body>
+</html>
